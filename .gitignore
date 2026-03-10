@@ -1,0 +1,19 @@
+
+hardhat/node_modules
+package.json
+package-lock.json
+
+# Hardhat files
+hardhat/cache
+hardhat/artifacts
+hardhat/artifacts
+# solidity-coverage files
+hardhat/coverage
+hardhat/coverage.json
+
+hardhat/ignition
+
+hardhat/package.json
+hardhat/package-lock.json
+
+
