@@ -8,10 +8,10 @@ async function main() {
 
   // Check balance before deploy (helps catch low-funds issues early)
   const balance = await hre.ethers.provider.getBalance(deployer.address);
-  console.log("Account balance:", hre.ethers.formatEther(balance), "PAS");
+  console.log("Account balance:", hre.ethers.formatEther(balance), "STT");
 
 
-  const Token = await hre.ethers.getContractFactory("PGT");
+  const Token = await hre.ethers.getContractFactory("SGT");
 
 
  const initialSupply = hre.ethers.parseUnits("1000000", 18); 
@@ -49,7 +49,7 @@ main()
     console.error(error);
     process.exit(1);
   });
-*/
+  */
 
 ///Staking Deployment ///
 
@@ -59,7 +59,7 @@ const hre = require("hardhat");
 async function main() {
   const [deployer] = await hre.ethers.getSigners();
 
-  const G_TOKEN = "0xBd341D0020DfBc983217a95C3973A4C190e4cE4e"; 
+  const G_TOKEN = "0x90F4C46466A3c953a206b8bB3BeF9cC11be8fF75";
 
   console.log(`Deploying Staking contract with: ${deployer.address}`);
 
@@ -76,7 +76,7 @@ async function main() {
     console.log("\nWaiting 30 seconds for block explorers to index...");
     
     // Using a promise-based timeout
-    await new Promise(resolve => setTimeout(resolve, 30000));
+    await new Promise(resolve => setTimeout(resolve, 10000)); // wait for 10 sec
 
     console.log("Verifying contract on explorer...");
     try {
@@ -98,11 +98,11 @@ async function main() {
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
-});  */
-
+});  
+*/
 //Treasury Deploy script//
-/*
-const hre = require("hardhat");
+
+/*const hre = require("hardhat");
 
 async function main() {
   const [deployer] = await hre.ethers.getSigners();
@@ -154,10 +154,10 @@ const hre = require("hardhat");
 async function main() {
   const [deployer] = await hre.ethers.getSigners();
 
-  const StakingAddress = "0x1b13b80C84e7b8E7Ec0BEF70c76db81c81B06fd0"; 
-  const TreasuryAddress = "0xb215e6761C2574a6F5A39c0F7278caDf4dcBAb0A";
+  const StakingAddress = "0x53Ae18495aC7169D3730c258509f63D0eF84D9fb"; 
+  const TreasuryAddress = "0xB8Bd5630d02c65CD27e7B86177A3b4DC1AfB2A2D";
 
-  console.log(`Deploying Staking contract with: ${deployer.address}`);
+  console.log(`Deploying DAO contract with: ${deployer.address}`);
 
   const DAO = await hre.ethers.getContractFactory("GrantDao");
   const DaoContract = await DAO.deploy(StakingAddress, TreasuryAddress );
@@ -165,7 +165,7 @@ async function main() {
   await DaoContract.waitForDeployment();
   const deployedAddress = await DaoContract.getAddress();
 
-  console.log(`Staking contract deployed to: ${deployedAddress}`);
+  console.log(`DAO contract deployed to: ${deployedAddress}`);
 
   // Auto-Verification Logic
   if (hre.network.name !== "hardhat" && hre.network.name !== "localhost") {
@@ -194,4 +194,4 @@ async function main() {
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
-});
+}); 

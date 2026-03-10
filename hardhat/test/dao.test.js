@@ -13,15 +13,15 @@ describe("GrantDAO System", function () {
   beforeEach(async function () {
     [owner, user1, user2] = await ethers.getSigners();
 
-    const Token = await ethers.getContractFactory("PGT");
-    const initialSupply = ethers.parseUnits("1000000", 18);  // fixed: no hre. needed
+    const Token = await ethers.getContractFactory("SGT");
+    const initialSupply = ethers.parseUnits("1000000", 18);  
     token = await Token.deploy(initialSupply);
 
     const Staking = await ethers.getContractFactory("Staking");
     staking = await Staking.deploy(await token.getAddress());
 
     const Treasury = await ethers.getContractFactory("Treasury");
-    treasury = await Treasury.deploy(owner.address); 
+    treasury = await Treasury.deploy(); 
     
     const DAO = await ethers.getContractFactory("GrantDao");
     dao = await DAO.deploy(
