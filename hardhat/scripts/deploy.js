@@ -149,7 +149,7 @@ main().catch((error) => {
 
 //DAO deploy script///
 
-const hre = require("hardhat");
+/*const hre = require("hardhat");
 
 async function main() {
   const [deployer] = await hre.ethers.getSigners();
@@ -194,4 +194,50 @@ async function main() {
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
-}); 
+});  */
+
+const hre = require("hardhat");
+
+async function main() {
+  const [deployer] = await hre.ethers.getSigners();
+
+  const G_TOKEN = "0x90F4C46466A3c953a206b8bB3BeF9cC11be8fF75"; 
+
+  console.log(`Deploying Fauct contract with: ${deployer.address}`);
+
+  const Fauct = await hre.ethers.getContractFactory("Fauct");
+  const fauct = await Fauct.deploy(G_TOKEN);
+
+  await fauct.waitForDeployment();
+  const deployedAddress = await fauct.getAddress();
+
+  console.log(` Fauct deployed to: ${deployedAddress}`);
+
+  // Auto-Verification Logic
+  if (hre.network.name !== "hardhat" && hre.network.name !== "localhost") {
+    console.log("\nWaiting 30 seconds for block explorers to index...");
+    
+    // Using a promise-based timeout
+    await new Promise(resolve => setTimeout(resolve, 30000));
+
+    console.log("Verifying contract on explorer...");
+    try {
+      await hre.run("verify:verify", {
+        address: deployedAddress,
+        constructorArguments: [G_TOKEN],
+      });
+      console.log("Contract verified successfully!");
+    } catch (error) {
+      if (error.message.toLowerCase().includes("already verified")) {
+        console.log("Contract is already verified!");
+      } else {
+        console.error("Verification failed:", error);
+      }
+    }
+  }
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});  
