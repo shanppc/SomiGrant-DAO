@@ -26,6 +26,6 @@ export const ADDRESSES = {
 }
 
 export const SOMNIA = {
-  wsUrl: 'wss://dream-rpc.somnia.network/ws',
+  wsUrl: 'ws://api.infra.testnet.somnia.network/ws',
   explorerBaseUrl: 'https://shannon-explorer.somnia.network',
 }
