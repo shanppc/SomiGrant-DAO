@@ -1,14 +1,25 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { createPublicClient, webSocket } from 'viem'
-import { decodeEventLog } from 'viem'
-import { Reactivity } from '@somnia-chain/reactivity'
-import { ADDRESSES, SOMNIA } from '../utils/config'
+import { createPublicClient, defineChain, webSocket, decodeEventLog } from 'viem'
+import { SDK } from '@somnia-chain/reactivity'
+import { ADDRESSES, SOMNIA, NETWORK } from '../utils/config'
 import { daoABI, faucetABI } from '../utils/contracts'
 
-function toViemAbi(ethersHumanReadableAbi) {
-  // viem accepts human-readable ABI as well; keep as-is.
-  return ethersHumanReadableAbi
-}
+const somniaTestnet = defineChain({
+  id: NETWORK.chainId,
+  name: NETWORK.chainName,
+  network: 'testnet',
+  nativeCurrency: NETWORK.nativeCurrency,
+  rpcUrls: {
+    default: {
+      http: NETWORK.rpcUrls,
+      webSocket: [SOMNIA.wsUrl],
+    },
+    public: {
+      http: NETWORK.rpcUrls,
+      webSocket: [SOMNIA.wsUrl],
+    },
+  },
+})
 
 export function useSomniaReactivity({ enabled = true, onEvent }) {
   const [status, setStatus] = useState({ connected: false, lastEvent: null, error: null })
@@ -17,7 +28,8 @@ export function useSomniaReactivity({ enabled = true, onEvent }) {
 
   const publicClient = useMemo(() => {
     return createPublicClient({
-      transport: webSocket(SOMNIA.wsUrl),
+      chain: somniaTestnet,
+      transport: webSocket(),
     })
   }, [])
 
@@ -29,7 +41,7 @@ export function useSomniaReactivity({ enabled = true, onEvent }) {
     async function start() {
       try {
         setStatus((s) => ({ ...s, error: null }))
-        const sdk = new Reactivity({ public: publicClient })
+        const sdk = new SDK({ public: publicClient })
 
         const sub = await sdk.subscribe({
           ethCalls: [],
@@ -42,8 +54,7 @@ export function useSomniaReactivity({ enabled = true, onEvent }) {
             let decoded = null
             try {
               decoded = decodeEventLog({
-                // Merge DAO and faucet ABIs so we can decode both governance and faucet activity.
-                abi: toViemAbi([...daoABI, ...faucetABI]),
+                abi: [...daoABI, ...faucetABI],
                 data,
                 topics,
               })
@@ -51,23 +62,19 @@ export function useSomniaReactivity({ enabled = true, onEvent }) {
               // decoding can fail if ABI mismatches; still trigger refresh
             }
 
-            const payload = {
-              raw: n,
-              log,
-              decoded,
-            }
-
+            const payload = { raw: n, log, decoded }
             setStatus({ connected: true, lastEvent: payload, error: null })
             onEventRef.current?.(payload)
           },
           onError: (err) => {
+            console.error('Reactivity WS error:', err)
             if (!alive) return
             setStatus({ connected: false, lastEvent: null, error: err?.message || String(err) })
           },
-          // Listen to both DAO contract and Faucet contract as event sources.
           eventContractSources: [ADDRESSES.dao, ADDRESSES.faucet],
         })
 
+        console.log('Reactivity subscription result:', sub)
         if (sub instanceof Error) throw sub
         setStatus((s) => ({ ...s, connected: true }))
         unsub = () => sub.unsubscribe()
@@ -79,14 +86,9 @@ export function useSomniaReactivity({ enabled = true, onEvent }) {
     start()
     return () => {
       alive = false
-      try {
-        unsub?.()
-      } catch {
-        // ignore
-      }
+      try { unsub?.() } catch { /* ignore */ }
     }
   }, [enabled, publicClient])
 
   return status
 }
-

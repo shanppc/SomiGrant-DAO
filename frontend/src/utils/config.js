@@ -9,9 +9,16 @@ export const NETWORK = {
     symbol: 'STT',
     decimals: 18,
   },
-  rpcUrls: [
-    'https://dream-rpc.somnia.network',
-  ],
+  rpcUrls: {
+    default: {
+      http: ['https://dream-rpc.somnia.network'],
+      webSocket: ['wss://dream-rpc.somnia.network/ws'],
+    },
+    public: {
+      http: ['https://dream-rpc.somnia.network'],
+      webSocket: ['wss://dream-rpc.somnia.network/ws'],
+    },
+  },
   blockExplorerUrls: [
     'https://shannon-explorer.somnia.network',
   ],
