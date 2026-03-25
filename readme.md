@@ -5,10 +5,13 @@ Imagine a DAO where votes update live, treasury balances tick in real time, and 
 
 Perfect for funding builders in games, metaverses, social apps, and more — all on one of the fastest EVM chains out there.
 
-**Live Demo:**  
-🌐 https://somi-grant-dao.vercel.app/
+[Live Demo 🌐 ](https://somi-grant-dao.vercel.app/)
 
 (Connect your wallet on Somnia Testnet to see personal balances, stake, propose, and watch the magic happen live!)
+
+[Video Demo ](https://youtu.be/Hmu_1G4K_Vg?si=0W2vZ5337bUExGWu)
+
+
 
 ---
 
@@ -29,31 +32,22 @@ SomiGrant DAO fixes this by making governance **instantly responsive** and **sta
 
 ---
 
-## How It Works (Super Simple)
-
-1. **Claim & Stake SGT** — Grab test tokens from the faucet, stake them to unlock voting power.  
-   (Only staked tokens = real influence — no flash-loan tricks!)
-
-2. **Fund the Treasury** — Send native STT (testnet gas token) to power grants.
-
-3. **Create a Proposal** — Describe your idea + ask for STT funding.
-
-4. **Vote Live** — Stakers vote → see tallies climb in real time
-
-5. **Watch It Happen** — The **Live Somnia Activity** feed streams every claim, stake, proposal, vote, and treasury move instantly via WebSockets.
-
----
-
 ## Real-Time Magic: Somnia Reactivity at the Core
 
-This project leans hard into **Somnia Reactivity SDK**:
+![Binance live price update](https://github.com/user-attachments/assets/0d9cae0b-8dad-4560-bd69-a1df0fc0e023)
 
-- WebSocket subscriptions push on-chain events (faucet claims, stakes, proposals, votes, treasury transfers) directly to the frontend.
+Just like **Binance** automatically updates cryptocurrency prices in real-time without any page refresh (using WebSockets), SomiGrant DAO does the same for on-chain data.
 
-- Live vote counters, treasury balance, and activity log update atomically — sub-second feedback.
-- No more "refresh to see if my vote went through"
+We’ve implemented the **Somnia Reactivity SDK** to push live blockchain events directly to the frontend via WebSockets.
 
-→ This delivers the kind of **real-time UX** that makes DAOs feel modern and addictive.
+### What this enables:
+- WebSocket subscriptions instantly deliver on-chain events (faucet claims, stakes, proposals, votes, treasury transfers)
+- Live vote counters, treasury balance, and activity feed update in sub-second time
+- No polling and no manual refreshing required
+
+→ This creates a smooth, modern, and truly **real-time UX** that makes on-chain governance feel fast and engaging — just like centralized exchanges.
+
+*(See the WebSocket configuration here: [config.js](https://github.com/shanppc/SomiGrant-DAO/blob/38500ae7122aaad2aefbd2d41ba178a04a179d39/frontend/src/utils/config.js#L19))*
 
 ---
 
